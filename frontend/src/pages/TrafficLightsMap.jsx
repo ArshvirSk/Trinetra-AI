@@ -1,39 +1,127 @@
-import React, { useEffect, useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useState } from "react";
 
-const GOOGLE_API_KEY = "AIzaSyAcsbrr5mKHFjjWQ8PhV3twTf87vlglZsg"; // Replace with your actual API key
-
-// Hardcoded Smart Traffic Light Locations in Mumbai
-const smartTrafficLights = [
-  { id: 1, name: "Traffic Light - Andheri", lat: 19.1197, lng: 72.8464 },
-  { id: 2, name: "Traffic Light - Bandra", lat: 19.0553, lng: 72.8311 },
-  { id: 3, name: "Traffic Light - Dadar", lat: 19.0183, lng: 72.8426 },
-  { id: 4, name: "Traffic Light - CST", lat: 18.9388, lng: 72.8354 },
-  { id: 5, name: "Traffic Light - Worli", lat: 19.0165, lng: 72.8151 },
+const trafficLightsData = [
+  {
+    id: 1,
+    name: "Signal at Dadar",
+    lat: 19.0176,
+    lng: 72.8562,
+    location: "Dadar, Mumbai",
+    type: "Pedestrian",
+    status: "Operational",
+  },
+  {
+    id: 2,
+    name: "Signal at Bandra",
+    lat: 19.055,
+    lng: 72.829,
+    location: "Bandra, Mumbai",
+    type: "Vehicle",
+    status: "Under Maintenance",
+  },
+  {
+    id: 3,
+    name: "Signal at Andheri",
+    lat: 19.1197,
+    lng: 72.8479,
+    location: "Andheri, Mumbai",
+    type: "Smart Signal",
+    status: "Operational",
+  },
+  {
+    id: 4,
+    name: "Signal at CST",
+    lat: 18.9401,
+    lng: 72.8352,
+    location: "CST, Mumbai",
+    type: "Vehicle",
+    status: "Operational",
+  },
 ];
 
+const mapContainerStyle = {
+  width: "100%",
+  height: "100vh",
+  display: "flex",
+};
+
+const center = {
+  lat: 19.076, // Mumbai
+  lng: 72.8777,
+};
+
 const TrafficLightsMap = () => {
-  const [mapCenter, setMapCenter] = useState({ lat: 19.076, lng: 72.8777 }); // Mumbai
+  const [selectedSignal, setSelectedSignal] = useState(null);
 
   return (
-    <div>
-      <h2 style={{ textAlign: "center" }}>Smart Traffic Lights in Mumbai</h2>
-
-      <LoadScript googleMapsApiKey={"AIzaSyAcsbrr5mKHFjjWQ8PhV3twTf87vlglZsg"}>
-        <GoogleMap
-          mapContainerStyle={{ width: "100%", height: "500px" }}
-          center={mapCenter}
-          zoom={12}
-        >
-          {smartTrafficLights.map((light) => (
-            <Marker
-              key={light.id}
-              position={{ lat: light.lat, lng: light.lng }}
-              title={light.name}
-            />
-          ))}
-        </GoogleMap>
+    <div className="relative flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <LoadScript googleMapsApiKey="AIzaSyAcsbrr5mKHFjjWQ8PhV3twTf87vlglZsg">
+        <div className="flex-grow p-4">
+          <div className="rounded-xl overflow-hidden shadow-2xl">
+            <GoogleMap
+              mapContainerStyle={{ ...mapContainerStyle, borderRadius: "12px" }}
+              center={center}
+              zoom={12}
+            >
+              {trafficLightsData.map((signal) => (
+                <Marker
+                  key={signal.id}
+                  position={{ lat: signal.lat, lng: signal.lng }}
+                  onClick={() => setSelectedSignal(signal)}
+                />
+              ))}
+            </GoogleMap>
+          </div>
+        </div>
       </LoadScript>
+
+      {/* Glassmorphism Sidebar */}
+      <div className="w-96 p-6 bg-white/10 backdrop-blur-lg backdrop-filter rounded-l-2xl shadow-2xl border-l border-white/20">
+        {selectedSignal ? (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-white/90">
+              {selectedSignal.name}
+            </h2>
+            <div className="space-y-3">
+              <div className="p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <p className="text-white/80">
+                  <span className="font-semibold text-white/90">Location:</span>{" "}
+                  {selectedSignal.location}
+                </p>
+              </div>
+              <div className="p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <p className="text-white/80">
+                  <span className="font-semibold text-white/90">
+                    Signal Type:
+                  </span>{" "}
+                  {selectedSignal.type}
+                </p>
+              </div>
+              <div className="p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <p className="text-white/80">
+                  <span className="font-semibold text-white/90">Status:</span>{" "}
+                  <span
+                    className={`${
+                      selectedSignal.status === "Operational"
+                        ? "text-green-400"
+                        : "text-yellow-400"
+                    }`}
+                  >
+                    {selectedSignal.status}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-white/60 text-lg">
+              Click on a marker to see details.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

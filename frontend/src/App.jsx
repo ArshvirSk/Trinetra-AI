@@ -1,3 +1,4 @@
+import "leaflet/dist/leaflet.css";
 import {
   NavLink,
   Route,
@@ -7,11 +8,11 @@ import {
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import Routing from "./pages/Routing";
+import SmartParking from "./pages/SmartParking.jsx";
+import TrafficLightsMap from "./pages/TrafficLightsMap.jsx";
+import TrafficMap from "./pages/TrafficMap";
 import TrafficSignal from "./pages/TrafficSignal";
 import UserProfile from "./pages/UserProfile";
-import TrafficMap from "./pages/TrafficMap";
-import "leaflet/dist/leaflet.css";
-import TrafficLightsMap from "./pages/TrafficLightsMap.jsx";
 
 function App() {
   return (
@@ -74,6 +75,16 @@ function App() {
               <span className="mx-3">Traffic Lights Map</span>
             </NavLink>
             <NavLink
+              to="/smart-parking"
+              className={({ isActive }) =>
+                `flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-green-500 ${
+                  isActive ? "bg-gray-700 text-green-500" : ""
+                }`
+              }
+            >
+              <span className="mx-3">Smart Parking</span>
+            </NavLink>
+            <NavLink
               to="/profile"
               className={({ isActive }) =>
                 `flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-green-500 ${
@@ -94,6 +105,7 @@ function App() {
             <Route path="/traffic-lights" element={<TrafficLightsMap />} />
             <Route path="/routing" element={<Routing />} />
             <Route path="/map" element={<TrafficMap />} />
+            <Route path="/smart-parking" element={<SmartParking />} />
             <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </div>
